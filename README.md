@@ -29,7 +29,7 @@ $ npm i readrc
 const readrc = require('readrc')
 
 const options = {
-  cwd: '/path/to/project',
+  path: '/path/to/project',
   name: '.eslintrc'
 }
 
@@ -46,10 +46,10 @@ console.log(readrc.sync(options))  // the same as rc
 
 ## APIs
 
-### readrc(options)
+### readrc(options): Promise<RCResult>
 
 - **options**
-  - **cwd** `string` the search path for the rc file.
+  - **path** `string | Array<string>` the search path(s) for the rc file.
   - **name** `string` the prefix name of the rc file to search.
   - **extensions** `Extensions | undefined`
   - **parsers** `Object{[Extension]: ParserFunction}`
@@ -118,11 +118,11 @@ function CodeFrameFunction (
 ): string
 ```
 
-### readrc.sync(options)
+### readrc.sync(options): RCResult
 
 - **options** the same as `options` of `readrc()`
 
-## Built-in readers
+## Built-in parsers
 
 ### js
 
@@ -130,13 +130,12 @@ Wrapped from `require`
 
 ### yaml
 
-Based on [`js-yaml`]()
+Based on [`js-yaml`](https://npmjs.org/package/js-yaml)
 
 ### readrc.NO_EXT
 
-json5
+Based on [`json5`](https://npmjs.org/package/json5)
 
-###
 
 ## License
 

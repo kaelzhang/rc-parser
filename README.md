@@ -27,6 +27,7 @@ $ npm i readrc
 
 ```js
 const readrc = require('readrc')
+const sync = require('readrc/sync')
 
 const options = {
   path: '/path/to/project',
@@ -41,7 +42,7 @@ console.log(rc.value)
 //   extends: 'airbnb-base'
 // }
 
-console.log(readrc.sync(options))  // the same as rc
+console.log(sync(options))  // the same as rc
 ```
 
 ## APIs
@@ -53,7 +54,7 @@ console.log(readrc.sync(options))  // the same as rc
   - **name** `string` the prefix name of the rc file to search.
   - **extensions** `Extensions | undefined`
   - **parsers** `Object{[Extension]: ParserFunction}`
-  - **on_not_found** `NotFoundFunction` will be executed if no rc files are found.
+  - **not_found_error** `NotFoundErrorFunction` will be executed if no rc files are found.
   - **code_frame** `CodeFrameFunction | false`
 
 Returns `Promise<RCResult>`
@@ -111,11 +112,22 @@ interface ParserError extends Error {
 If the error (`ParserError`) thrown by `ParserFunction` contains both the `line` property and the `column` property, the `error.message` will be argumented by `CodeFrameFunction`
 
 ```ts
+interface Location {
+  line: number;
+  column: number;
+}
+
 function CodeFrameFunction (
   rawLines: string,
-  line: number,
-  column: number
+  loc: Location
 ): string
+```
+
+```ts
+function NotFoundErrorFunction (
+  paths: Array<string>,
+  extensions: Extensions
+): Error
 ```
 
 ### readrc.sync(options): RCResult

@@ -1,7 +1,7 @@
 {
   "name": "readrc",
   "version": "1.0.0",
-  "description": "readrc",
+  "description": "Read rc, rc.js, rc.yaml or etc if any one of them exists",
   "main": "src/index.js",
   "scripts": {
     "test": "npm run test-no-report",
@@ -10,14 +10,18 @@
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "files": [
-    "src/"
+    "src/",
+    "sync.js"
   ],
   "repository": {
     "type": "git",
     "url": "git://github.com/kaelzhang/readrc.git"
   },
   "keywords": [
-    "readrc"
+    "readrc",
+    "eslintrc",
+    "rc.js",
+    "rc.yaml"
   ],
   "engines": {
     "node": ">= 6"
@@ -39,9 +43,11 @@
     "eslint": "^5.1.0"
   },
   "dependencies": {
-    "babel-code-frame": "^6.26.0",
+    "@babel/code-frame": "^7.0.0-beta.55",
     "js-yaml": "^3.12.0",
     "json5": "^1.0.1",
-    "make-array": "^1.0.5"
+    "make-array": "^1.0.5",
+    "promise-faker": "^1.2.5",
+    "promise.extra": "^3.0.1"
   }
 }

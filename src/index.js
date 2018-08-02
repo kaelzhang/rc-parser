@@ -1,71 +1,15 @@
 const fs = require('fs')
-const yaml = require('js-yaml')
-const json5 = require('json5')
-const make_array = require('make-array')
+const {factory} = require('promise.extra')
 
-const NO_EXT = Symbol('readrc-no-ext')
-const DEFAULT_EXTENSIONS = [
-  'yaml',
-  'js',
-  NO_EXT
-]
+const {ReaderBase, checkOptions, NO_EXT} = require('./base')
 
-const DEFAULT_PARSERS = {
-  yaml (content) {
-    try {
-      return yaml.safeLoad(content)
-    } catch (error) {
-      const {
-        reason,
-        mark: {
-          line,
-          column
-        }
-      } = error
-
-      const err = new SyntaxError(reason)
-      err.line = line
-      err.column = column
-
-      throw err
-    }
-  },
-
-  [NO_EXT] (content) {
-    try {
-      return json5.parse(content)
-    } catch (error) {
-      const err = new SyntaxError(err.message)
-      err.line = error.lineNumber
-      err.column = error.columnNumber
-
-      throw err
-    }
-  }
-}
-
-const DEFAULT_ON_NOT_FOUND = () => {
-  throw new Error('')
-}
-
-const DEFAULT_CODE_FRAME = () => {
-
-}
-
-class ReaderBase {
-  constructor ({
-    path,
-    name,
-    extensions = DEFAULT_EXTENSIONS,
-    parsers = {},
-    on_not_found = DEFAULT_ON_NOT_FOUND,
-    code_frame = DEFAULT_CODE_FRAME
-  }) {
-
-  }
-}
+const extra = factory(Promise)
 
 class Reader extends ReaderBase {
+  constructor (options) {
+    super(options, Promise, extra)
+  }
+
   _exists (abspath) {
     return new Promise(resolve => {
       fs.access(abspath, fs.constants.R_OK, err => {
@@ -74,43 +18,24 @@ class Reader extends ReaderBase {
     })
   }
 
-  _read (abspath) {
+  _readFile (abspath) {
     return new Promise((resolve, reject) => {
       fs.readFile(abspath, (err, content) => {
         if (err) {
           return reject(err)
         }
 
-        resolve(content)
+        resolve(content.toString())
       })
     })
   }
-}
 
-class SyncReader extends ReaderBase {
-  _exists (abspath) {
-    try {
-      fs.accessSync(abspath, fs.constants.R_OK)
-      return true
-    } catch (err) {
-      return false
-    }
+  _teardown (promise) {
+    return promise
   }
-
-  _read (abspath) {
-    return fs.readFileSync(abspath)
-  }
-}
-
-const checkOptions = options => {
-  if (!options) {
-    throw new TypeError('options must be an object')
-  }
-
-  return options
 }
 
 const readrc = options => new Reader(checkOptions(options)).parse()
-readrc.sync = options => new SyncReader(checkOptions(options)).parse()
+readrc.NO_EXT = NO_EXT
 
 module.exports = readrc

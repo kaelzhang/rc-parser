@@ -30,17 +30,14 @@ const readrc = require('readrc')
 const sync = require('readrc/sync')
 
 const options = {
-  path: '/path/to/project',
+  path: __dirname,  // current directory
   name: '.eslintrc'
 }
 
 const rc = await readrc(options)
 
-console.log(rc.extension) // yaml
-console.log(rc.value)
-// {
-//   extends: 'airbnb-base'
-// }
+console.log(rc.extension)       // 'js'
+console.log(rc.value.extends)   // 'airbnb-base'
 
 console.log(sync(options))  // the same as rc
 ```

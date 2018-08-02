@@ -1,7 +1,7 @@
 const {test} = require('ava')
 const path = require('path')
 
-const readrc = require('../src')
+const readrc = require('..')
 
 const fixture = (...p) => path.join(__dirname, 'fixtures', ...p)
 

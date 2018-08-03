@@ -1,6 +1,6 @@
 {
   "name": "rc-finder",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Find and parse rc, rc.js, rc.yaml or etc if any one of them exists",
   "main": "src/index.js",
   "scripts": {

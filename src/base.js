@@ -73,9 +73,14 @@ class ReaderBase {
     not_found_error = DEFAULT_ON_NOT_FOUND,
     code_frame = DEFAULT_CODE_FRAME
   }, promise, extra) {
-    if (!paths) {
-      throw new TypeError('options.path must be specified')
+    const cleaned_paths = make_array(paths)
+    .filter(Boolean)
+    .map(p => path.resolve(p))
+
+    if (cleaned_paths.length === 0) {
+      throw new TypeError('options.path must be string or array of string(s)')
     }
+    this._paths = cleaned_paths
 
     if (!isString(name)) {
       throw new TypeError('options.name must be a string')
@@ -84,7 +89,6 @@ class ReaderBase {
     this._promise = promise
     this._extra = extra
 
-    this._paths = make_array(paths).map(p => path.resolve(p))
     this._name = name
     this._extensions = extensions
     this._parsers = parsers
@@ -103,12 +107,16 @@ class ReaderBase {
   }
 
   parse () {
-    return this._searchAll()
+    const result = this._searchAll()
     .then(found => {
-      const {ext, abspath} = found
+      const {extension, abspath} = found
 
-      if (ext === EXT_JS) {
-        return require(abspath)
+      if (extension === EXT_JS) {
+        return {
+          extension,
+          abspath,
+          value: require(abspath)
+        }
       }
 
       return this._promise.resolve(this._readFile(abspath))
@@ -118,14 +126,16 @@ class ReaderBase {
       })
       .then(value => ({
         value,
-        extension: ext,
+        extension,
         abspath
       }))
     })
+
+    return this._teardown(result)
   }
 
   _searchAll () {
-    return this._extra.find(this._paths, isFound, (prev, p) => this._search(p))
+    return this._extra.find(this._paths, isFound, (_, p) => this._search(p))
     .then(found => {
       if (found) {
         return found
@@ -139,24 +149,24 @@ class ReaderBase {
     return this._extra.find(
       this._extensions,
       ({abspath}) => this._exists(abspath),
-      (_, ext) => {
-        const filename = basename(this._name, ext)
+      (_, extension) => {
+        const filename = basename(this._name, extension)
         const abspath = path.join(search_path, filename)
 
         return {
           abspath,
-          ext
+          extension
         }
       }
     )
   }
 
   _parse ({
-    ext,
+    extension,
     abspath,
     content
   }) {
-    const parser = this._parsers[ext]
+    const parser = this._parsers[extension]
 
     try {
       return parser(content)

@@ -33,7 +33,7 @@ $ npm i rc-finder
 
 ```js
 const find = require('rc-finder')
-const sync = require('rc-finder/sync')
+const sync = require('rc-finder/sync')  // The synchronous version
 
 const options = {
   path: __dirname,  // current directory
@@ -71,7 +71,7 @@ find({
 
 ## APIs
 
-### find(options): Promise<RCResult>
+### find(options): Promise&lt;RCResult&gt;
 
 - **options**
   - **path** `string | Array<string>` the search path(s) for the rc file.
@@ -128,7 +128,7 @@ function ParserFunction (object: {
 ```
 
 - **content** the content of the rc file
-- **filepath** the filepath relative to `options.cwd`
+- **filepath** the filepath relative to the current search path
 
 Parses the content of rc files, returns the parsed object, or throws error if there is a parse error.
 
@@ -160,7 +160,7 @@ function NotFoundErrorFunction (
 ): Error
 ```
 
-### rc-finder.sync(options): RCResult
+### sync(options): RCResult
 
 - **options** the same as `options` of `find(options)`
 

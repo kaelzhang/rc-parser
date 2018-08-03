@@ -1,5 +1,5 @@
 {
-  "name": "readrc",
+  "name": "rc-finder",
   "version": "1.0.0",
   "description": "Read rc, rc.js, rc.yaml or etc if any one of them exists",
   "main": "src/index.js",
@@ -15,10 +15,10 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/kaelzhang/readrc.git"
+    "url": "git://github.com/kaelzhang/rc-finder.git"
   },
   "keywords": [
-    "readrc",
+    "rc-finder",
     "eslintrc",
     "rc.js",
     "rc.yaml"
@@ -32,7 +32,7 @@
   "author": "kaelzhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaelzhang/readrc/issues"
+    "url": "https://github.com/kaelzhang/rc-finder/issues"
   },
   "devDependencies": {
     "ava": ">= 1.0.0-beta.6",

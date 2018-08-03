@@ -1,50 +1,50 @@
-[![Build Status](https://travis-ci.org/kaelzhang/readrc.svg?branch=master)](https://travis-ci.org/kaelzhang/readrc)
-[![Coverage](https://codecov.io/gh/kaelzhang/readrc/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/readrc)
+[![Build Status](https://travis-ci.org/kaelzhang/rc-finder.svg?branch=master)](https://travis-ci.org/kaelzhang/rc-finder)
+[![Coverage](https://codecov.io/gh/kaelzhang/rc-finder/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/rc-finder)
 <!-- optional appveyor tst
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/readrc?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/readrc)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/rc-finder?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/rc-finder)
 -->
 <!-- optional npm version
-[![NPM version](https://badge.fury.io/js/readrc.svg)](http://badge.fury.io/js/readrc)
+[![NPM version](https://badge.fury.io/js/rc-finder.svg)](http://badge.fury.io/js/rc-finder)
 -->
 <!-- optional npm downloads
-[![npm module downloads per month](http://img.shields.io/npm/dm/readrc.svg)](https://www.npmjs.org/package/readrc)
+[![npm module downloads per month](http://img.shields.io/npm/dm/rc-finder.svg)](https://www.npmjs.org/package/rc-finder)
 -->
 <!-- optional dependency status
-[![Dependency Status](https://david-dm.org/kaelzhang/readrc.svg)](https://david-dm.org/kaelzhang/readrc)
+[![Dependency Status](https://david-dm.org/kaelzhang/rc-finder.svg)](https://david-dm.org/kaelzhang/rc-finder)
 -->
 
-# readrc
+# rc-finder
 
 Read rc, rc.js, rc.yaml or etc if any one of them exists
 
 ## Install
 
 ```sh
-$ npm i readrc
+$ npm i rc-finder
 ```
 
 ## Usage
 
 ```js
-const readrc = require('readrc')
-const sync = require('readrc/sync')
+const find = require('rc-finder')
+const sync = require('rc-finder/sync')
 
 const options = {
   path: __dirname,  // current directory
-  name: '.eslintrc'
+  name: '.travis'
 }
 
-const rc = await readrc(options)
+const rc = await find(options)
 
-console.log(rc.extension)       // 'js'
-console.log(rc.value.extends)   // 'airbnb-base'
+console.log(rc.extension)         // 'yml'
+console.log(rc.value.language)    // 'node_js'
 
 console.log(sync(options))  // the same as rc
 ```
 
 ## APIs
 
-### readrc(options): Promise<RCResult>
+### find(options): Promise<RCResult>
 
 - **options**
   - **path** `string | Array<string>` the search path(s) for the rc file.
@@ -57,33 +57,39 @@ console.log(sync(options))  // the same as rc
 Returns `Promise<RCResult>`
 
 ```ts
-type Extension = string | readrc.NO_EXT
+type Extension = string | rc-finder.NO_EXT
 type Extensions = Array<Extension>
 ```
 
 `options.extensions` specifies the extension priority for searching rc files.
 
-`readrc.NO_EXT` is a special extension which indicates there is no extension after `name`
+`find.NO_EXT` is a special extension which indicates there is no extension after `name`
 
 ```sh
 # Suppose: options.name === '.eslintrc'
 #             filepath      |  extension
 # ------------------------- | -----------------
-/path/to/cwd
-           | .eslintrc        # readrc.NO_EXT
-           | .eslintrc.js     # 'js'
-           | .eslintrc.yaml   # 'yaml'
+/path/to/project
+          |-- .eslintrc        # rc-finder.NO_EXT
+          |-- .eslintrc.js     # 'js'
+          |-- .eslintrc.yaml   # 'yaml'
 ```
+
+If `options.extensions` as `['yaml', 'js', NO_EXT]`, then we will get `.eslintrc.yaml`.
+
+Similarly, `['js', 'yaml', NO_EXT]` => `.eslintrc.js`
 
 ```ts
 interface RCResult {
   extension: string;
+  abspath: string;
   value: object;
 }
 ```
 
 - **extension** the extension string of the found rc file, excluding `.`
 - **value** the parsed value
+- **abspath** the absolute path of the rc file.
 
 ```ts
 function ParserFunction (object: {
@@ -127,9 +133,9 @@ function NotFoundErrorFunction (
 ): Error
 ```
 
-### readrc.sync(options): RCResult
+### rc-finder.sync(options): RCResult
 
-- **options** the same as `options` of `readrc()`
+- **options** the same as `options` of `find(options)`
 
 ## Built-in parsers
 
@@ -141,7 +147,7 @@ Wrapped from `require`
 
 Based on [`js-yaml`](https://npmjs.org/package/js-yaml)
 
-### readrc.NO_EXT
+### rc-finder.NO_EXT
 
 Based on [`json5`](https://npmjs.org/package/json5)
 

@@ -4,34 +4,37 @@ const make_array = require('make-array')
 const {codeFrameColumns} = require('@babel/code-frame')
 const path = require('path')
 
-const NO_EXT = Symbol('readrc-no-ext')
+const NO_EXT = Symbol('rc-finder-no-ext')
 const DEFAULT_EXTENSIONS = [
   'yaml',
+  'yml',
   'js',
   NO_EXT
 ]
 const EXT_JS = 'js'
+const yamlParser = content => {
+  try {
+    return yaml.safeLoad(content)
+  } catch (error) {
+    const {
+      reason,
+      mark: {
+        line,
+        column
+      }
+    } = error
+
+    const err = new SyntaxError(reason)
+    err.line = line
+    err.column = column
+
+    throw err
+  }
+}
 
 const DEFAULT_PARSERS = {
-  yaml (content) {
-    try {
-      return yaml.safeLoad(content)
-    } catch (error) {
-      const {
-        reason,
-        mark: {
-          line,
-          column
-        }
-      } = error
-
-      const err = new SyntaxError(reason)
-      err.line = line
-      err.column = column
-
-      throw err
-    }
-  },
+  yaml: yamlParser,
+  yml: yamlParser,
 
   [NO_EXT] (content) {
     try {

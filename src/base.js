@@ -4,7 +4,7 @@ const make_array = require('make-array')
 const {codeFrameColumns} = require('@babel/code-frame')
 const path = require('path')
 
-const NO_EXT = Symbol('rc-finder-no-ext')
+const NO_EXT = Symbol('rc-parser-no-ext')
 const DEFAULT_EXTENSIONS = [
   'yaml',
   'yml',

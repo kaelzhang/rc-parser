@@ -1,9 +1,9 @@
 const {test} = require('ava')
 const path = require('path')
-const log = require('util').debuglog('rc-finder')
+const log = require('util').debuglog('rc-parser')
 const ini = require('ini')
 
-const find = require('..')
+const parse = require('..')
 const sync = require('../sync')
 
 const fixture = (...p) => path.join(__dirname, 'fixtures', ...p)
@@ -42,14 +42,14 @@ const CASES = [
     options: {
       name: '.eslintrc',
       path: fixture('normal'),
-      extensions: [find.NO_EXT, 'yaml']
+      extensions: [parse.NO_EXT, 'yaml']
     },
     expect: {
       value: {
         extends: 'airbnb-base'
       },
       abspath: fixture('normal', '.eslintrc'),
-      extension: find.NO_EXT
+      extension: parse.NO_EXT
     }
   },
 
@@ -174,7 +174,7 @@ const getTest = only => only
   ? test.only
   : test
 
-const run = (type, finder, runner) => {
+const run = (type, parser, runner) => {
   CASES.forEach(({
     d = '',
     p = '',
@@ -185,7 +185,7 @@ const run = (type, finder, runner) => {
   }) => {
     getTest(only)(`${type}: ${p}: ${d}`, t =>
       runner(
-        () => finder(options),
+        () => parser(options),
 
         result => {
           if (error) {
@@ -217,7 +217,7 @@ const run = (type, finder, runner) => {
   })
 }
 
-run('async', find, (factory, then, error) => {
+run('async', parse, (factory, then, error) => {
   try {
     return factory().then(then, error)
   } catch (err) {
@@ -234,7 +234,7 @@ run('sync', sync, (factory, then, error) => {
 })
 
 // test('normal', async t => {
-//   const result = await find({
+//   const result = await parse({
 //     path: fixture('normal'),
 //     name: '.eslintrc'
 //   })
@@ -246,6 +246,6 @@ run('sync', sync, (factory, then, error) => {
 //   } = result
 
 //   t.is(value.extends, 'airbnb-base')
-//   t.is(extension, find.NO_EXT)
+//   t.is(extension, parse.NO_EXT)
 //   t.is(abspath, fixture('normal', '.eslintrc'))
 // })

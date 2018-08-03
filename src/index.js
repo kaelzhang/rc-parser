@@ -37,8 +37,8 @@ class Reader extends ReaderBase {
   }
 }
 
-const find = options => new Reader(checkOptions(options)).parse()
-find.NO_EXT = NO_EXT
-find.PARSERS = PARSERS
+const parse = options => new Reader(checkOptions(options)).parse()
+parse.NO_EXT = NO_EXT
+parse.PARSERS = PARSERS
 
-module.exports = find
+module.exports = parse

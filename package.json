@@ -1,11 +1,11 @@
 {
-  "name": "rc-finder",
-  "version": "1.0.0",
+  "name": "rc-parser",
+  "version": "1.0.2",
   "description": "Find and parse rc, rc.js, rc.yaml or etc if any one of them exists",
   "main": "src/index.js",
   "scripts": {
     "test": "nyc ava --timeout=10s",
-    "test-no-report": "NODE_DEBUG=rc-finder nyc ava --timeout=10s --verbose",
+    "test-no-report": "NODE_DEBUG=rc-parser nyc ava --timeout=10s --verbose",
     "lint": "eslint .",
     "posttest": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
@@ -15,13 +15,18 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/kaelzhang/rc-finder.git"
+    "url": "git://github.com/kaelzhang/rc-parser.git"
   },
   "keywords": [
-    "rc-finder",
+    "rc-parser",
     "eslintrc",
     "rc.js",
-    "rc.yaml"
+    "rc.yaml",
+    "runtime-config",
+    "rc",
+    "read",
+    "parser",
+    "finder"
   ],
   "engines": {
     "node": ">= 6"
@@ -32,7 +37,7 @@
   "author": "kaelzhang",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kaelzhang/rc-finder/issues"
+    "url": "https://github.com/kaelzhang/rc-parser/issues"
   },
   "devDependencies": {
     "ava": ">= 1.0.0-beta.6",

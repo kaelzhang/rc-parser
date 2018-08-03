@@ -32,8 +32,8 @@ class SyncReader extends ReaderBase {
 }
 
 
-const find = options => new SyncReader(checkOptions(options)).parse()
-find.NO_EXT = NO_EXT
-find.PARSERS = PARSERS
+const parse = options => new SyncReader(checkOptions(options)).parse()
+parse.NO_EXT = NO_EXT
+parse.PARSERS = PARSERS
 
-module.exports = find
+module.exports = parse

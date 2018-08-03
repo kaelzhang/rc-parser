@@ -1,23 +1,23 @@
-[![Build Status](https://travis-ci.org/kaelzhang/rc-finder.svg?branch=master)](https://travis-ci.org/kaelzhang/rc-finder)
-[![Coverage](https://codecov.io/gh/kaelzhang/rc-finder/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/rc-finder)
+[![Build Status](https://travis-ci.org/kaelzhang/rc-parser.svg?branch=master)](https://travis-ci.org/kaelzhang/rc-parser)
+[![Coverage](https://codecov.io/gh/kaelzhang/rc-parser/branch/master/graph/badge.svg)](https://codecov.io/gh/kaelzhang/rc-parser)
 <!-- optional appveyor tst
-[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/rc-finder?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/rc-finder)
+[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/kaelzhang/rc-parser?branch=master&svg=true)](https://ci.appveyor.com/project/kaelzhang/rc-parser)
 -->
 <!-- optional npm version
-[![NPM version](https://badge.fury.io/js/rc-finder.svg)](http://badge.fury.io/js/rc-finder)
+[![NPM version](https://badge.fury.io/js/rc-parser.svg)](http://badge.fury.io/js/rc-parser)
 -->
 <!-- optional npm downloads
-[![npm module downloads per month](http://img.shields.io/npm/dm/rc-finder.svg)](https://www.npmjs.org/package/rc-finder)
+[![npm module downloads per month](http://img.shields.io/npm/dm/rc-parser.svg)](https://www.npmjs.org/package/rc-parser)
 -->
 <!-- optional dependency status
-[![Dependency Status](https://david-dm.org/kaelzhang/rc-finder.svg)](https://david-dm.org/kaelzhang/rc-finder)
+[![Dependency Status](https://david-dm.org/kaelzhang/rc-parser.svg)](https://david-dm.org/kaelzhang/rc-parser)
 -->
 
-# rc-finder
+# rc-parser
 
-Find and parse rc, rc.js, rc.yaml or etc if any one of them exists. `rc-finder` searches the giving path(s), and finds out that if the runtime configuration file with the certain extension listed in `options.extensions` exists. If found, it parses and returns the config object.
+Find and parse rc, rc.js, rc.yaml or etc if any one of them exists. `rc-parser` searches the giving path(s), and parses out that if the runtime configuration file with the certain extension listed in `options.extensions` exists. If found, it parses and returns the config object.
 
-`rc-finder` featured in:
+`rc-parser` featured in:
 
 - Supports to define custom parser for a certain file type.
 - Better error messages and syntax hint.
@@ -26,21 +26,21 @@ Find and parse rc, rc.js, rc.yaml or etc if any one of them exists. `rc-finder` 
 ## Install
 
 ```sh
-$ npm i rc-finder
+$ npm i rc-parser
 ```
 
 ## Usage
 
 ```js
-const find = require('rc-finder')
-const sync = require('rc-finder/sync')  // The synchronous version
+const parse = require('rc-parser')
+const sync = require('rc-parser/sync')  // The synchronous version
 
 const options = {
   path: __dirname,  // current directory
   name: '.travis'
 }
 
-const rc = await find(options)
+const rc = await parse(options)
 
 console.log(rc.extension)         // 'yml'
 console.log(rc.value.language)    // 'node_js'
@@ -53,7 +53,7 @@ console.log(sync(options))  // the same as rc
 ```js
 const ini = require('ini')
 
-find({
+parse({
   path: '/path/to',
   name: 'somerc',
   extensions: ['ini', 'js'],
@@ -71,7 +71,7 @@ find({
 
 ## APIs
 
-### find(options): Promise&lt;RCResult&gt;
+### parse(options): Promise&lt;RCResult&gt;
 
 - **options**
   - **path** `string | Array<string>` the search path(s) for the rc file.
@@ -84,20 +84,20 @@ find({
 Returns `Promise<RCResult>`
 
 ```ts
-type Extension = string | find.NO_EXT
+type Extension = string | parse.NO_EXT
 type Extensions = Array<Extension>
 ```
 
-`options.extensions` specifies the extension priority for searching rc files. Defaults to `['yaml', 'yml', 'js', find.NO_EXT]`
+`options.extensions` specifies the extension priority for searching rc files. Defaults to `['yaml', 'yml', 'js', parse.NO_EXT]`
 
-`find.NO_EXT` is a special extension which indicates there is no extension after `name`
+`parse.NO_EXT` is a special extension which indicates there is no extension after `name`
 
 ```sh
 # Suppose: options.name === '.eslintrc'
 #             filepath      |  extension
 # ------------------------- | -----------------
 /path/to/project
-          |-- .eslintrc        # rc-finder.NO_EXT
+          |-- .eslintrc        # rc-parser.NO_EXT
           |-- .eslintrc.js     # 'js'
           |-- .eslintrc.yaml   # 'yaml'
 ```
@@ -162,12 +162,12 @@ function NotFoundErrorFunction (
 
 ### sync(options): RCResult
 
-- **options** the same as `options` of `find(options)`
+- **options** the same as `options` of `parse(options)`
 
 ## Built-in parsers
 
 ```js
-find.PARSERS.<type>
+parse.PARSERS.<type>
 ```
 
 ### yaml, yml

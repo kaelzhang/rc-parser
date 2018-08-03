@@ -1,8 +1,10 @@
 const fs = require('fs')
 const FakePromise = require('promise-faker')
-const {factory} = require('promies.extra')
+const {factory} = require('promise.extra')
 
-const {ReaderBase, checkOptions} = require('./src/base')
+const {
+  ReaderBase, checkOptions, NO_EXT, PARSERS
+} = require('./src/base')
 
 const extra = factory(FakePromise)
 
@@ -30,4 +32,8 @@ class SyncReader extends ReaderBase {
 }
 
 
-module.exports = options => new SyncReader(checkOptions(options)).parse()
+const find = options => new SyncReader(checkOptions(options)).parse()
+find.NO_EXT = NO_EXT
+find.PARSERS = PARSERS
+
+module.exports = find

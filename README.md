@@ -15,7 +15,13 @@
 
 # rc-finder
 
-Read rc, rc.js, rc.yaml or etc if any one of them exists
+Find and parse rc, rc.js, rc.yaml or etc if any one of them exists. `rc-finder` searches the giving path(s), and finds out that if the runtime configuration file with the certain extension listed in `options.extensions` exists. If found, it parses and returns the config object.
+
+`rc-finder` featured in:
+
+- Supports to define custom parser for a certain file type.
+- Better error messages and syntax hint.
+- Fully customizable.
 
 ## Install
 
@@ -42,6 +48,27 @@ console.log(rc.value.language)    // 'node_js'
 console.log(sync(options))  // the same as rc
 ```
 
+### Define your own parsers to support more file types
+
+```js
+const ini = require('ini')
+
+find({
+  path: '/path/to',
+  name: 'somerc',
+  extensions: ['ini', 'js'],
+  parsers: {
+    ini (content) {
+      return ini.parse(content)
+    }
+  }
+})
+.then(({extension, value}) => {
+  console.log(extension)   // 'ini'
+  console.log(value)       // the parsed object from ini
+})
+```
+
 ## APIs
 
 ### find(options): Promise<RCResult>
@@ -57,11 +84,11 @@ console.log(sync(options))  // the same as rc
 Returns `Promise<RCResult>`
 
 ```ts
-type Extension = string | rc-finder.NO_EXT
+type Extension = string | find.NO_EXT
 type Extensions = Array<Extension>
 ```
 
-`options.extensions` specifies the extension priority for searching rc files.
+`options.extensions` specifies the extension priority for searching rc files. Defaults to `['yaml', 'yml', 'js', find.NO_EXT]`
 
 `find.NO_EXT` is a special extension which indicates there is no extension after `name`
 
@@ -139,18 +166,17 @@ function NotFoundErrorFunction (
 
 ## Built-in parsers
 
-### js
+```js
+find.PARSERS.<type>
+```
 
-Wrapped from `require`
-
-### yaml
+### yaml, yml
 
 Based on [`js-yaml`](https://npmjs.org/package/js-yaml)
 
-### rc-finder.NO_EXT
+### json
 
 Based on [`json5`](https://npmjs.org/package/json5)
-
 
 ## License
 

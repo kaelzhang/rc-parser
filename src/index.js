@@ -1,7 +1,9 @@
 const fs = require('fs')
 const {factory} = require('promise.extra')
 
-const {ReaderBase, checkOptions, NO_EXT} = require('./base')
+const {
+  ReaderBase, checkOptions, NO_EXT, PARSERS
+} = require('./base')
 
 const extra = factory(Promise)
 
@@ -37,5 +39,6 @@ class Reader extends ReaderBase {
 
 const find = options => new Reader(checkOptions(options)).parse()
 find.NO_EXT = NO_EXT
+find.PARSERS = PARSERS
 
 module.exports = find

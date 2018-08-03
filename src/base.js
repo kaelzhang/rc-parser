@@ -12,6 +12,7 @@ const DEFAULT_EXTENSIONS = [
   NO_EXT
 ]
 const EXT_JS = 'js'
+
 const yamlParser = content => {
   try {
     return yaml.safeLoad(content)
@@ -32,21 +33,23 @@ const yamlParser = content => {
   }
 }
 
+const jsonParser = content => {
+  try {
+    return json5.parse(content)
+  } catch (error) {
+    const err = new SyntaxError(error.message)
+    err.line = error.lineNumber
+    err.column = error.columnNumber
+
+    throw err
+  }
+}
+
 const DEFAULT_PARSERS = {
   yaml: yamlParser,
   yml: yamlParser,
-
-  [NO_EXT] (content) {
-    try {
-      return json5.parse(content)
-    } catch (error) {
-      const err = new SyntaxError(error.message)
-      err.line = error.lineNumber
-      err.column = error.columnNumber
-
-      throw err
-    }
-  }
+  json: jsonParser,
+  [NO_EXT]: jsonParser
 }
 
 const DEFAULT_ON_NOT_FOUND = () => new Error('not found')
@@ -108,7 +111,7 @@ class ReaderBase {
         return require(abspath)
       }
 
-      return this._readFile(abspath)
+      return this._promise.resolve(this._readFile(abspath))
       .then(content => {
         found.content = content
         return this._parse(found)
@@ -200,5 +203,10 @@ const checkOptions = options => {
 module.exports = {
   checkOptions,
   ReaderBase,
-  NO_EXT
+  NO_EXT,
+  PARSERS: {
+    yaml: yamlParser,
+    yml: yamlParser,
+    json: jsonParser
+  }
 }
